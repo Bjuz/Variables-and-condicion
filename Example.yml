@@ -1,0 +1,38 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+variables: 
+
+- name: one
+  value: initialValue 
+- name: VmImageName
+  value: 'windows-latest'
+- name: slotTarget
+  ${{ if eq(variables['Build.SourceBranchName'], 'main') }} : 
+    value: 'build'
+  ${{ elseif eq(variables['Build.SourceBranchName'], 'master') }} : 
+    value: 'qa'   
+  ${{ else }} :  
+    value: 'devBuild'
+  
+pool:
+  vmImage: $(VmImageName)
+    
+  
+jobs:
+- job: buildApp 
+  displayName: 'Build the Vue App' 
+  #Set ENV.VARS for Webpack to read and inject during build 
+  steps:  
+  - task: CmdLine@2
+    inputs:
+      script: |
+        echo Write your commands here
+        echo $(slotTarget)
+            
+
+
